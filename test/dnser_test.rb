@@ -1,11 +1,6 @@
 require 'test_helper'
 
-class DnserTest < Minitest::Test
-  def test_that_it_has_a_version_number
-    refute_nil ::Dnser::VERSION
-  end
-
-  def test_it_does_something_useful
-    assert false
+module Dnser
+  class DnserTest < ::Test::Unit::TestCase
   end
 end
