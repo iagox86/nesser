@@ -1,9 +1,9 @@
 # Encoding: ASCII-8BIT
 require 'test_helper'
 
-require 'dnser/packets/unpacker'
+require 'nesser/packets/unpacker'
 
-module DNSer
+module Nesser
   class UnpackerTest < ::Test::Unit::TestCase
     def test_unpack()
       unpacker = Unpacker.new("AAAABBC")

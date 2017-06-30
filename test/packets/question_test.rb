@@ -1,9 +1,9 @@
 # Encoding: ASCII-8BIT
 require 'test_helper'
 
-require 'dnser/packets/question'
+require 'nesser/packets/question'
 
-module DNSer
+module Nesser
   class QuestionTest < ::Test::Unit::TestCase
     def test_question()
       # Create

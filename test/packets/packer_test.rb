@@ -1,9 +1,9 @@
 # Encoding: ASCII-8BIT
 require 'test_helper'
 
-require 'dnser/packets/packer'
+require 'nesser/packets/packer'
 
-module DNSer
+module Nesser
   class PackerTest < ::Test::Unit::TestCase
     def test_pack()
       packer = Packer.new()

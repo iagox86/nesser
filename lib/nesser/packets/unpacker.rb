@@ -15,10 +15,10 @@
 
 require 'hexhelper'
 
-require 'dnser/dns_exception'
-require 'dnser/packets/constants'
+require 'nesser/dns_exception'
+require 'nesser/packets/constants'
 
-module DNSer
+module Nesser
   class Unpacker
     attr_accessor :data, :offset
 

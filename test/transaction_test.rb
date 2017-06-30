@@ -1,13 +1,13 @@
 # Encoding: ASCII-8BIT
 require 'test_helper'
-require 'dnser/packets/answer'
-require 'dnser/packets/packet'
-require 'dnser/packets/question'
-require 'dnser/packets/rr_types'
+require 'nesser/packets/answer'
+require 'nesser/packets/packet'
+require 'nesser/packets/question'
+require 'nesser/packets/rr_types'
 
-require 'dnser/transaction'
+require 'nesser/transaction'
 
-module DNSer
+module Nesser
   class AnswerTest2 < ::Test::Unit::TestCase
     def test_answer()
       s = FakeSocket.new()

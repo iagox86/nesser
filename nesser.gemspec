@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'dnser/version'
+require 'nesser/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "dnser"
-  spec.version       = Dnser::VERSION
+  spec.name          = "nesser"
+  spec.version       = Nesser::VERSION
   spec.authors       = ["iagox86"]
   spec.email         = ["ron-git@skullsecurity.org"]
 
   spec.summary       = "A simple and straight forward DNS library, created for dnscat2"
-  spec.homepage      = "https://github.com/iagox86/dnser"
+  spec.homepage      = "https://github.com/iagox86/nesser"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = ["lib"]

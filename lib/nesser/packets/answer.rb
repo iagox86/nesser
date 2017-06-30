@@ -11,7 +11,7 @@
 # name of the domain from the question, followed by a resource record.
 ##
 
-module DNSer
+module Nesser
   class Answer
     attr_reader :name, :type, :cls, :ttl, :rr
 

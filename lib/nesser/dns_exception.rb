@@ -9,7 +9,7 @@
 # Implements a simple exception class for dns errors.
 ##
 
-module DNSer
+module Nesser
   class DnsException < StandardError
   end
 

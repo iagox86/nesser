@@ -14,7 +14,7 @@
 # requester. Only one bang method can be called, any subsequent calls will
 # throw an exception.
 ##
-module DNSer
+module Nesser
   class Transaction
     attr_reader :request_packet, :response_packet, :sent
 
@@ -57,7 +57,7 @@ module DNSer
 #    def passthrough!(pt_host, pt_port, callback = nil)
 #      not_sent!()
 #
-#      DNSer.query(@request.questions[0].name, {
+#      Nesser.query(@request.questions[0].name, {
 #          :server  => pt_host,
 #          :port    => pt_port,
 #          :type    => @request.questions[0].type,
@@ -68,7 +68,7 @@ module DNSer
 #        # If there was a timeout, handle it
 #        if(response.nil?)
 #          response = @response
-#          response.rcode = DNSer::Packet::RCODE_SERVER_FAILURE
+#          response.rcode = Nesser::Packet::RCODE_SERVER_FAILURE
 #        end
 #
 #        response.trn_id = @request.trn_id

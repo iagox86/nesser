@@ -10,7 +10,7 @@
 # and one question is also sent in the response - generally, the same as
 # the question that was asked.
 ##
-module DNSer
+module Nesser
   class Question
     attr_reader :name, :type, :cls
 

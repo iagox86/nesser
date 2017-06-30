@@ -7,15 +7,15 @@
 # See: LICENSE.md
 ##
 
-require 'dnser/dns_exception'
-require 'dnser/packets/answer'
-require 'dnser/packets/constants'
-require 'dnser/packets/packer'
-require 'dnser/packets/question'
-require 'dnser/packets/rr_types'
-require 'dnser/packets/unpacker'
+require 'nesser/dns_exception'
+require 'nesser/packets/answer'
+require 'nesser/packets/constants'
+require 'nesser/packets/packer'
+require 'nesser/packets/question'
+require 'nesser/packets/rr_types'
+require 'nesser/packets/unpacker'
 
-module DNSer
+module Nesser
   class Packet
     attr_accessor :trn_id, :qr, :opcode, :flags, :rcode, :questions, :answers
 
@@ -166,7 +166,7 @@ module DNSer
         QRS[@qr] || "unknown",
         @trn_id,
         OPCODES[@opcode] || "unknown opcode",
-        DNSer::FLAGS(@flags),
+        Nesser::FLAGS(@flags),
         RCODES[@rcode] || "unknown",
         @questions.length,
         @answers.length,

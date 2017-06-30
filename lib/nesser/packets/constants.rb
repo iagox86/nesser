@@ -7,7 +7,7 @@
 # See: LICENSE.md
 ##
 
-module DNSer
+module Nesser
   # Max recursion depth for parsing names
   MAX_RECURSION_DEPTH = 16
 

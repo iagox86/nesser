@@ -1,4 +1,4 @@
-# Dnser
+# Nesser
 
 A DNS client and server class, written for Dnscat2 (and other similar projects).
 
@@ -7,7 +7,7 @@ A DNS client and server class, written for Dnscat2 (and other similar projects).
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dnser'
+gem 'nesser'
 ```
 
 And then execute:
@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install dnser
+    $ gem install nesser
 
 ## Usage
 
@@ -24,5 +24,5 @@ TODO: Write usage instructions here
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/iagox86/dnser
+Bug reports and pull requests are welcome on GitHub at https://github.com/iagox86/nesser
 

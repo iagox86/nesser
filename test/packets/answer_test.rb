@@ -1,9 +1,9 @@
 # Encoding: ASCII-8BIT
 require 'test_helper'
-require 'dnser/packets/rr_types'
-require 'dnser/packets/answer'
+require 'nesser/packets/rr_types'
+require 'nesser/packets/answer'
 
-module DNSer
+module Nesser
   class AnswerTest < ::Test::Unit::TestCase
     def test_answer()
       # Create

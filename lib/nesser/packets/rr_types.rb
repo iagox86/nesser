@@ -9,12 +9,12 @@
 
 require 'ipaddr'
 
-require 'dnser/packets/constants'
-require 'dnser/dns_exception'
-require 'dnser/packets/packer'
-require 'dnser/packets/unpacker'
+require 'nesser/packets/constants'
+require 'nesser/dns_exception'
+require 'nesser/packets/packer'
+require 'nesser/packets/unpacker'
 
-module DNSer
+module Nesser
   class A
     attr_accessor :address
 

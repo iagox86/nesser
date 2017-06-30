@@ -1,6 +1,6 @@
 # Encoding: ASCII-8BIT
 ##
-# dnser.rb
+# nesser.rb
 # Created Oct 7, 2015
 # By Ron Bowes
 #
@@ -16,25 +16,25 @@
 # There are two methods for using this library: as a client (to make a query)
 # or as a server (to listen for queries and respond to them).
 #
-# To make a query, use DNSer.query:
+# To make a query, use Nesser.query:
 #
-#   DNSer.query("google.com") do |response|
+#   Nesser.query("google.com") do |response|
 #     ...
 #   end
 #
-# `response` will be of type DNSer::Packet.
+# `response` will be of type Nesser::Packet.
 #
-# To listen for queries, create a new instance of DNSer, which will begin
+# To listen for queries, create a new instance of Nesser, which will begin
 # listening on a port, but won't actually handle queries yet:
 #
-#   dnser = DNSer.new("0.0.0.0", 53) do |transaction|
+#   nesser = Nesser.new("0.0.0.0", 53) do |transaction|
 #     ...
 #   end
 #
-# `transaction` is of type DNSer::Transaction, and allows you to respond to the
+# `transaction` is of type Nesser::Transaction, and allows you to respond to the
 # request either immediately or asynchronously.
 #
-# DNSer currently supports the following record types: A, NS, CNAME, SOA, MX,
+# Nesser currently supports the following record types: A, NS, CNAME, SOA, MX,
 # TXT, and AAAA.
 ##
 
@@ -42,10 +42,10 @@ require 'ipaddr'
 require 'socket'
 require 'timeout'
 
-require "dnser/version"
+require "nesser/version"
 
-module DNSer
-  class DNSer
+module Nesser
+  class Nesser
     attr_reader :thread
 
     def initialize(s:, logger:, host:"0.0.0.0", port:53)
@@ -104,7 +104,7 @@ module DNSer
     # execution until the thread is stopped.
     def wait()
       if(@thread.nil?)
-        @logger.error("Tried to wait on a DNSer instance that wasn't listening!")
+        @logger.error("Tried to wait on a Nesser instance that wasn't listening!")
         return
       end
 
@@ -112,17 +112,17 @@ module DNSer
     end
 
     # Send out a query, asynchronously. This immediately returns, then, when the
-    # query is finished, the callback block is called with a DNSer::Packet that
+    # query is finished, the callback block is called with a Nesser::Packet that
     # represents the response (or nil, if there was a timeout).
-    def DNSer.query(s, hostname, params = {})
+    def Nesser.query(s, hostname, params = {})
       server   = params[:server]   || "8.8.8.8"
       port     = params[:port]     || 53
-      type     = params[:type]     || DNSer::Packet::TYPE_A
-      cls      = params[:cls]      || DNSer::Packet::CLS_IN
+      type     = params[:type]     || Nesser::Packet::TYPE_A
+      cls      = params[:cls]      || Nesser::Packet::CLS_IN
       timeout  = params[:timeout]  || 3
 
-      packet = DNSer::Packet.new(rand(65535), DNSer::Packet::QR_QUERY, DNSer::Packet::OPCODE_QUERY, DNSer::Packet::FLAG_RD, DNSer::Packet::RCODE_SUCCESS)
-      packet.add_question(DNSer::Packet::Question.new(hostname, type, cls))
+      packet = Nesser::Packet.new(rand(65535), Nesser::Packet::QR_QUERY, Nesser::Packet::OPCODE_QUERY, Nesser::Packet::FLAG_RD, Nesser::Packet::RCODE_SUCCESS)
+      packet.add_question(Nesser::Packet::Question.new(hostname, type, cls))
 
       s = UDPSocket.new()
 
@@ -132,7 +132,7 @@ module DNSer
 
           timeout(timeout) do
             response = s.recv(65536)
-            proc.call(DNSer::Packet.unpack(response))
+            proc.call(Nesser::Packet.unpack(response))
           end
         rescue Timeout::Error
           proc.call(nil)
