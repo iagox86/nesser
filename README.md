@@ -80,11 +80,11 @@ will take the `transaction.response` packet, with whatever changes have been
 made to it, add to it, and send it off.
 
 `transaction.answer!()` takes an optional array of
-[answers](lib/nesser/packets/answer.rb), adds them to the packet, then sends
+[Nesser::Answer](lib/nesser/packets/answer.rb), adds them to the packet, then sends
 it.
 
 `transaction.error!()` takes a response code (see
-[constants.rb](lib/nesser/packets/constants.rb]) for the list), updates the
+[constants.rb](lib/nesser/packets/constants.rb) for the list), updates the
 packet with that code, then sends it.
 
 You'll rarely need to do anything with the transaction other than inspecting the
