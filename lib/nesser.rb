@@ -18,40 +18,28 @@
 #
 # To make a query, use Nesser.query:
 #
-#   Nesser.query("google.com") do |response|
-#     ...
-#   end
-#
-# `response` will be of type Nesser::Packet.
-#
-# To listen for queries, create a new instance of Nesser, which will begin
-# listening on a port, but won't actually handle queries yet:
-#
-#   nesser = Nesser.new("0.0.0.0", 53) do |transaction|
-#     ...
-#   end
-#
-# `transaction` is of type Nesser::Transaction, and allows you to respond to the
-# request either immediately or asynchronously.
-#
-# Nesser currently supports the following record types: A, NS, CNAME, SOA, MX,
-# TXT, and AAAA.
+# ...TODO...
 ##
 
 require 'ipaddr'
 require 'socket'
 require 'timeout'
 
-require "nesser/version"
+require 'nesser/version'
+
+require 'nesser/packets/packet'
+require 'nesser/transaction'
+require 'nesser/logger'
 
 module Nesser
   class Nesser
     attr_reader :thread
 
-    def initialize(s:, logger:, host:"0.0.0.0", port:53)
+    def initialize(s:, logger: nil, host:"0.0.0.0", port:53)
       @s = s
       @s.bind(host, port)
-      @logger = logger
+
+      @logger = (logger = logger || Logger.new())
 
       @thread = Thread.new() do
         begin
@@ -65,6 +53,9 @@ module Nesser
             rescue DnsException => e
               logger.error("Failed to parse the DNS packet: %s" % e.to_s())
               next
+            rescue Exception => e
+              logger.error("Error: %s" % e.to_s())
+              logger.info(e.backtrace().join("\n"))
             end
 
             # Create a transaction object, which we can use to respond
@@ -79,8 +70,11 @@ module Nesser
               proc.call(transaction)
             rescue StandardError => e
               logger.error("Error thrown while processing the DNS packet: %s" % e.to_s())
-              logger.info(e.backtrace())
-              transaction.error!(RCODE_SERVER_FAILURE)
+              logger.info(e.backtrace().join("\n"))
+
+              if transaction.open?()
+                transaction.error!(RCODE_SERVER_FAILURE)
+              end
             end
           end
         ensure
@@ -111,38 +105,39 @@ module Nesser
       @thread.join()
     end
 
-    # Send out a query, asynchronously. This immediately returns, then, when the
-    # query is finished, the callback block is called with a Nesser::Packet that
-    # represents the response (or nil, if there was a timeout).
-    def Nesser.query(s, hostname, params = {})
-      server   = params[:server]   || "8.8.8.8"
-      port     = params[:port]     || 53
-      type     = params[:type]     || Nesser::Packet::TYPE_A
-      cls      = params[:cls]      || Nesser::Packet::CLS_IN
-      timeout  = params[:timeout]  || 3
-
-      packet = Nesser::Packet.new(rand(65535), Nesser::Packet::QR_QUERY, Nesser::Packet::OPCODE_QUERY, Nesser::Packet::FLAG_RD, Nesser::Packet::RCODE_SUCCESS)
-      packet.add_question(Nesser::Packet::Question.new(hostname, type, cls))
-
+    # Send out a query
+    def self.query(s:, hostname:, server: '8.8.8.8', port: 53, type: TYPE_A, cls: CLS_IN, timeout: 3)
       s = UDPSocket.new()
 
-      return Thread.new() do
-        begin
-          s.send(packet.serialize(), 0, server, port)
+      question = Question.new(
+        name: hostname,
+        type: type,
+        cls: cls,
+      )
 
-          timeout(timeout) do
-            response = s.recv(65536)
-            proc.call(Nesser::Packet.unpack(response))
+      packet = Packet.new(
+        trn_id: rand(65535),
+        qr: QR_QUERY,
+        opcode: OPCODE_QUERY,
+        flags: FLAG_RD,
+        rcode: RCODE_SUCCESS,
+        questions: [question],
+        answers: [],
+      )
+
+      begin
+        Timeout.timeout(timeout) do
+          s.send(packet.to_bytes(), 0, server, port)
+          response = s.recv(65536)
+
+          if response.nil?()
+            raise(DnsException, "Error communicating with the DNS server")
           end
-        rescue Timeout::Error
-          proc.call(nil)
-        rescue Exception => e
-          @logger.error("There was an exception sending a query for #{hostname} to #{server}:#{port}: #{e}")
-        ensure
-          if(s)
-            s.close()
-          end
+
+          return Packet.parse(response)
         end
+      rescue Timeout::Error
+        raise(DnsException, "Timeout communicating with the DNS server")
       end
     end
   end

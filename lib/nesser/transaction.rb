@@ -37,6 +37,11 @@ module Nesser
     end
 
     public
+    def open?()
+      return !@sent
+    end
+
+    public
     def answer!(answers=[])
       answers.each do |answer|
         @response_packet.add_answer(answer)
@@ -89,6 +94,23 @@ module Nesser
 
       @s.send(@response_packet.to_bytes(), 0, @host, @port)
       @sent = true
+    end
+
+    public
+    def to_s()
+      result = []
+
+      result << '== Nesser (DNS) Transaction =='
+      result << '-- Request --'
+      result << @request_packet.to_s()
+      if !sent()
+        result << '-- Response [not sent yet] --'
+      else
+        result << '-- Response [sent] --'
+      end
+      result << @response_packet.to_s()
+
+      return result.join("\n")
     end
   end
 end

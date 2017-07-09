@@ -166,7 +166,7 @@ module Nesser
         QRS[@qr] || "unknown",
         @trn_id,
         OPCODES[@opcode] || "unknown opcode",
-        Nesser::FLAGS(@flags),
+        ::Nesser::FLAGS(@flags),
         RCODES[@rcode] || "unknown",
         @questions.length,
         @answers.length,
