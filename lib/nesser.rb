@@ -61,7 +61,7 @@ module Nesser
             # Create a transaction object, which we can use to respond
             transaction = Transaction.new(
               s: @s,
-              request_packet: request,
+              request: request,
               host: data[1][3],
               port: data[1][1],
             )
