@@ -70,7 +70,7 @@ called once, after which the transaction is done and shouldn't be used anymore.
 The request packet can be accessed via `transaction.request`, and the response
 can be directly accessed (or changed, though I don't recommend that) via
 `transaction.response` and `transaction.response=()`. Both are instances of
-[Nesser::Packet](lib/nesser/packet/packet.rb). The response already has the
+[Nesser::Packet](lib/nesser/packets/packet.rb). The response already has the
 appropriate `trn_id` and `flags` and the `question`, so all you have to do is
 add answers and send it off using `transaction.reply!()`.
 
@@ -80,11 +80,11 @@ will take the `transaction.response` packet, with whatever changes have been
 made to it, add to it, and send it off.
 
 `transaction.answer!()` takes an optional array of
-[answers](lib/nesser/packet/answer.rb), adds them to the packet, then sends
+[answers](lib/nesser/packets/answer.rb), adds them to the packet, then sends
 it.
 
 `transaction.error!()` takes a response code (see
-[lib/nesser/packets/constants.rb](constants.rb) for the list), updates the
+[constants.rb](lib/nesser/packets/constants.rb]) for the list), updates the
 packet with that code, then sends it.
 
 You'll rarely need to do anything with the transaction other than inspecting the
@@ -118,7 +118,7 @@ nesser.wait()
 
 We currently support A, NS, CNAME, SOA, MX, TXT, and AAAA records. We can also
 parse and send unknown types as well. You can find the definitions in
-[rr_types.rb](lib/nesser/packets/rr_types).
+[rr_types.rb](lib/nesser/packets/rr_types.rb).
 
 For quick reference:
 
