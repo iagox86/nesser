@@ -24,11 +24,18 @@ module Nesser
       @segment_cache = {}
     end
 
+    ##
+    # This is simply a wrapper around String.pack() - it's for packing perfectly
+    # ordinary data into a DNS packet.
+    ##
     public
     def pack(format, *data)
       @data += data.pack(format)
     end
 
+    ##
+    # Sanity check a name (length, legal characters, etc).
+    ##
     private
     def validate!(name)
       if name.chars.detect { |ch| !LEGAL_CHARACTERS.include?(ch) }
@@ -44,9 +51,37 @@ module Nesser
       end
     end
 
-    # Take a name, as a dotted string ("google.com") and return it as length-
-    # prefixed segments ("\x06google\x03com\x00"). It also does a pointer
-    # (\xc0\xXX) when possible!
+    ##
+    # This function is sort of the point of this class's existance.
+    #
+    # You pass in a typical DNS name, such as "google.com". If that name
+    # doesn't appear in the packet yet, it's simply encoded with length-
+    # prefixed segments - "\x06google\x03com\x00".
+    #
+    # However, if all or part of the name already exist in the packet, this will
+    # save packet space by re-using those segments. For example, let's say that
+    # "google.com" exists 0x0c bytes into the packet (which it normally does).
+    # In that case, instead of including "\x06google\x03com\x00" a second time,
+    # it will simply encode the offset with "\xc0" in front - "\xc0\x0c".
+    #
+    # Let's say that later in the packet, we have "www.google.com". That string
+    # as a whole hasn't appeared yet, but "google.com" appeared at offset 0x0c.
+    # It will then be encoded "\x03www\xc0\x0c" - the longest possible segment
+    # is encoded.
+    #
+    # This logic is somewhat complicated, but this function seems to work
+    # pretty well. :)
+    #
+    # * `name`: The name to encode, as a normal dotted string.
+    # * `dry_run`: If set to true, don't actually "write" the name. This is
+    #   unfortunately needed to check the size of something that *would* be
+    #   encoded, since we occasionally need the length written to the buffer
+    #   before the name.
+    # * `compress`: If set (which it always probably should be), will attempt
+    #   to do the compression ("\xc0") stuff discussed earlier.
+    #
+    # Returns the actual length of the name.
+    ##
     public
     def pack_name(name, dry_run:false, compress:true)
       length = 0
@@ -89,6 +124,9 @@ module Nesser
       return length
     end
 
+    ##
+    # Retrieve the buffer as a string.
+    ##
     public
     def get()
       return @data

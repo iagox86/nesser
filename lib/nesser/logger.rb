@@ -1,12 +1,12 @@
 # Encoding: ASCII-8BIT
 ##
-# dns_exception.rb
+# logger.rb.rb
 # Created June 20, 2017
 # By Ron Bowes
 #
 # See LICENSE.md
 #
-# Implements a simple exception class for dns errors.
+# A super simple logger implementation.
 ##
 
 module Nesser

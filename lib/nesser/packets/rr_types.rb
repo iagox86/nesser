@@ -5,6 +5,16 @@
 # By Ron Bowes
 #
 # See: LICENSE.md
+#
+# These are implementations of resource records - ie, the records found in a DNS
+# answer that contain, for example, an ip address, a mail exchange, etc.
+#
+# Every one of these classes follows the same paradigm (I guess in Java you'd
+# say they implement the same interface). They can be initialized with
+# type-dependent parameters; they implement `self.unpack()`, which takes a
+# `Nesser::Unpacker` and returns an instance of itself; they implement `pack()`,
+# which serialized itself into a `Nesser::Packer` instance; and they have a
+# `to_s()` function, which stringifies the record in a fairly user-friendly way.
 ##
 
 require 'ipaddr'
@@ -15,6 +25,9 @@ require 'nesser/packets/packer'
 require 'nesser/packets/unpacker'
 
 module Nesser
+  ##
+  # An A record is a typical IPv4 address - eg, '1.2.3.4'.
+  ##
   class A
     attr_accessor :address
 
@@ -54,6 +67,9 @@ module Nesser
     end
   end
 
+  ##
+  # Nameserver record: eg, 'ns1.google.com'.
+  ##
   class NS
     attr_accessor :name
 
@@ -80,6 +96,9 @@ module Nesser
     end
   end
 
+  ##
+  # Alias record: eg, 'www.google.com'->'google.com'.
+  ##
   class CNAME
     attr_accessor :name
 
@@ -105,6 +124,9 @@ module Nesser
     end
   end
 
+  ##
+  # Statement of authority record.
+  ##
   class SOA
     attr_accessor :primary, :responsible, :serial, :refresh, :retry_interval, :expire, :ttl
 
@@ -155,6 +177,9 @@ module Nesser
     end
   end
 
+  ##
+  # Mail exchange record - eg, 'mail.google.com' 10.
+  ##
   class MX
     attr_accessor :preference, :name
 
@@ -188,6 +213,10 @@ module Nesser
     end
   end
 
+  ##
+  # A TXT record, with is simply binary data (except on some libraries where it
+  # can't contain a NUL byte).
+  ##
   class TXT
     attr_accessor :data
 
@@ -223,6 +252,9 @@ module Nesser
     end
   end
 
+  ##
+  # IPv6 record, eg, "::1".
+  ##
   class AAAA
     attr_accessor :address
 
@@ -264,6 +296,9 @@ module Nesser
     end
   end
 
+  ##
+  # An unknown record type.
+  ##
   class RRUnknown
     attr_reader :type, :data
     def initialize(type:, data:)

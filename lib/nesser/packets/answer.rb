@@ -6,15 +6,26 @@
 #
 # See: LICENSE.md
 #
-# A DNS answer. A DNS response packet contains zero or more Answer records
-# (defined by the 'ancount' value in the header). An answer contains the
-# name of the domain from the question, followed by a resource record.
+# A DNS answer. A DNS packet contains zero or more Answer records (defined in
+# the 'ancount' value in the header). An answer contains the name of the domain
+# followed by a resource record.
 ##
 
 module Nesser
   class Answer
     attr_reader :name, :type, :cls, :ttl, :rr
 
+    ##
+    # Create an answer.
+    #
+    # * `name`: Should match the name from the question.
+    # * `type`: The type of resource record (eg, TYPE_A, TYPE_NS, etc). You can
+    #   find a list of types in constants.rb.
+    # * `cls`: The DNS class - this will almost certainly be `Nesser::CLS_IN`,
+    #   since 'IN' means 'Internet'. I'm not familiar with any others.
+    # * `ttl`: The time-to-live for the response, in seconds
+    # * `rr`: A resource record - you can find these classes in rr_types.rb.
+    ##
     def initialize(name:, type:, cls:, ttl:, rr:)
       @name = name
       @type = type
@@ -23,6 +34,11 @@ module Nesser
       @rr   = rr
     end
 
+    ##
+    # Parse an answer from a DNS packet. You won't likely need to use this, but
+    # if you do, it's necessary to use a Nesser::Unpacker that's loaded with the
+    # full DNS message (due to in-packet pointers).
+    ##
     def self.unpack(unpacker)
       name = unpacker.unpack_name()
       type, cls, ttl = unpacker.unpack("nnN")
@@ -55,6 +71,10 @@ module Nesser
       )
     end
 
+    ##
+    # Pack this into a Nesser::Packer in preparation for being sent over the
+    # wire.
+    ##
     def pack(packer)
       # The name is echoed back
       packer.pack_name(@name)

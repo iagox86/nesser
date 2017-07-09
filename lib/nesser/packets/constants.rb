@@ -5,6 +5,9 @@
 # By Ron Bowes
 #
 # See: LICENSE.md
+#
+# A bunch of constants used with DNS - some of them for the protocol, others for
+# error checking the outgoing messages.
 ##
 
 module Nesser
@@ -21,6 +24,8 @@ module Nesser
   MAX_SEGMENT_LENGTH = 63
   MAX_TOTAL_LENGTH = 253
 
+  # DNS classes - I only define IN (Internet) because I don't even know what to
+  # do with others.
   CLS_IN                = 0x0001 # Internet
   CLSES = {
     CLS_IN => "IN",
@@ -42,7 +47,6 @@ module Nesser
   RCODE_NAME_ERROR      = 0x0003 # :NXDomain
   RCODE_NOT_IMPLEMENTED = 0x0004
   RCODE_REFUSED         = 0x0005
-
   RCODES = {
     RCODE_SUCCESS         => ":NoError (RCODE_SUCCESS)",
     RCODE_FORMAT_ERROR    => ":FormErr (RCODE_FORMAT_ERROR)",
@@ -56,7 +60,6 @@ module Nesser
   OPCODE_QUERY  = 0x0000
   OPCODE_IQUERY = 0x0800
   OPCODE_STATUS = 0x1000
-
   OPCODES = {
     OPCODE_QUERY  => "OPCODE_QUERY",
     OPCODE_IQUERY => "OPCODE_IQUERY",
@@ -72,7 +75,6 @@ module Nesser
   TYPE_TXT   = 0x0010
   TYPE_AAAA  = 0x001c
   TYPE_ANY   = 0x00FF
-
   TYPES = {
     TYPE_A     => "A",
     TYPE_NS    => "NS",

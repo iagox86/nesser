@@ -5,6 +5,9 @@
 # By Ron Bowes
 #
 # See: LICENSE.md
+#
+# An implementation of a DNS packet, including encoding and parsing. This covers
+# the header and questions/answers.
 ##
 
 require 'nesser/dns_exception'
@@ -19,6 +22,25 @@ module Nesser
   class Packet
     attr_accessor :trn_id, :qr, :opcode, :flags, :rcode, :questions, :answers
 
+    ##
+    # Create a new packet.
+    #
+    # * `trn_id`: The 16-bit transaction id - should be random for clients, and
+    #   match the incoming trn_id for servers.
+    # * `qr`: QR_QUERY or QR_RESPONSE.
+    # * `opcode`: will likely be OPCODE_QUERY.
+    # * `flags`: A combination of the flags FLAG_AA, FLAG_TC, FLAG_RD, and
+    #   FLAG_RA.
+    # * `rcode`: A response code - RCODE_SUCCESS for requests or good responses,
+    #   or an error code (RCODE_NAME_ERROR, RCODE_SERVER_FAILURE, etc) for
+    #   errors. Find the list in constants.rb.
+    # * `questions`: An array (although most implementations only handle exactly
+    #   one) of questions - Nesser::Question.
+    # * `answers`: An array of zero or more ansewrs - Nesser::Answer.
+    #
+    # We don't support authority or additional records right now (or perhaps
+    # ever).
+    ##
     def initialize(trn_id:, qr:, opcode:, flags:, rcode:, questions:[], answers:[])
       @trn_id    = trn_id
       @qr        = qr
@@ -33,6 +55,9 @@ module Nesser
       @answers   = answers
     end
 
+    ##
+    # Add a Nesser::Question.
+    ##
     def add_question(question)
       if !question.is_a?(Question)
         raise(DnsException, "Questions must be of type Question!")
@@ -41,6 +66,9 @@ module Nesser
       @questions << question
     end
 
+    ##
+    # Add a Nesser::Answer.
+    ##
     def add_answer(answer)
       if !answer.is_a?(Answer)
         raise(DnsException, "Questions must be of type Question!")
@@ -49,6 +77,12 @@ module Nesser
       @answers << answer
     end
 
+    ##
+    # Parse an incoming DNS packet. Takes a byte string as an argument, and
+    # returns an instance of Nesser::Packet - this class.
+    #
+    # Raises a DnsException if things go badly.
+    ##
     def self.parse(data)
       unpacker = Unpacker.new(data)
       trn_id, full_flags, qdcount, ancount, _, _ = unpacker.unpack("nnnnnn")
@@ -81,6 +115,11 @@ module Nesser
       return packet
     end
 
+    ##
+    # Convert a query packet to the corresponding answer - the trn_id is copied,
+    # the qr is changed to QR_RESPONSE, the opcode and flags are updated, and
+    # the question from the query is added.
+    ##
     def answer(answers:[], question:nil)
       question = question || @questions[0]
 
@@ -95,6 +134,10 @@ module Nesser
       )
     end
 
+    ##
+    # Convert a query packet to the corresponding error answer with the given
+    # rcode (see constants.rb for a list of rcodes).
+    ##
     def error(rcode:, question:nil)
       question = question || @questions[0]
 
@@ -109,6 +152,9 @@ module Nesser
       )
     end
 
+    ##
+    # Serialize the packet to an array of bytes.
+    ##
     def to_bytes()
       packer = Packer.new()
 

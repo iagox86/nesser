@@ -22,12 +22,21 @@ module Nesser
   class Unpacker
     attr_accessor :data, :offset
 
+    ##
+    # Create a new unpacker with a string (the string must be the full DNS
+    # request, starting at the `trn_id` - otherwise, unpacking compressed
+    # fields won't work properly!
+    ##
     public
     def initialize(data)
       @data = data
       @offset = 0
     end
 
+    ##
+    # Does some basic error checking to make sure we didn't run off the end of
+    # packet - doesn't catch every case, though.
+    ##
     private
     def _verify_results(results)
       # If there's at least one nil included in our results, bad stuff happened
@@ -36,8 +45,11 @@ module Nesser
       end
     end
 
-    # Unpack from the string, exactly like the normal `String#Unpack` method
-    # in Ruby, except that an offset into the string is maintained and updated.
+    ##
+    # Unpack from the string, exactly like the normal `String.unpack()` method
+    # in Ruby, except that a pointer offset into the string is maintained and
+    # updated (which is required for unpacking names).
+    ##
     public
     def unpack(format)
       if @offset >= @data.length
@@ -53,6 +65,13 @@ module Nesser
       return *results
     end
 
+    ##
+    # Unpack a single element from the buffer and return it (this is a simple
+    # little utility function that I wrote to save myself time).
+    #
+    # The `format` argument works exactly like in `String.unpack()`, but only
+    # one element can be given.
+    ##
     public
     def unpack_one(format)
       results = unpack(format)
@@ -65,9 +84,10 @@ module Nesser
       return results.pop()
     end
 
-    # This temporarily changes the offset that we're reading from, runs the
-    # given block, then changes it back. This is used internally while
-    # unpacking names.
+    ##
+    # Temporarily changes the offset that we're reading from, runs the given
+    # block, then changes it back. This is used internally while unpacking names.
+    ##
     private
     def _with_offset(offset)
       old_offset = @offset
@@ -76,11 +96,26 @@ module Nesser
       @offset = old_offset
     end
 
-    # Unpack a name from the packet. Names are special, because they're
-    # encoded as:
-    # * A series of length-prefixed blocks, each indicating a segment
-    # * Blocks with a length the starts with two '1' bits (11xxxxx...), which
-    #   contains a pointer to another name elsewhere in the packet
+    ##
+    # Unpack a name from the packet and convert it into a standard dotted name
+    # that we all understand.
+    #
+    # At the simplest, names are encoded as length-prefixed blocks. For example,
+    # "google.com" is encoded as "\x06google\x03com\x00".
+    #
+    # More complex, however, is that all or part of a name can be replaced with
+    # "\xc0" followed by an offset into the packet where the remainder of the
+    # name (or the full name) can be found. For example, if
+    # "\x06google\x03com\x00" is found at index 0x0c (which it frequently is),
+    # then "www.google.com" can be encoded as "\x03www\xc0\x0c". In other words,
+    # "www" followed by the rest of the name at offset 0x0c".
+    #
+    # The point of this class is that that situation is handled as cleanly as
+    # possible.
+    #
+    # The `depth` argument is used internally for recursion, the default value
+    # of 0 should be used externally.
+    ##
     public
     def unpack_name(depth:0)
       segments = []
