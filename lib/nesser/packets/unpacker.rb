@@ -32,7 +32,7 @@ module Nesser
     def _verify_results(results)
       # If there's at least one nil included in our results, bad stuff happened
       if results.index(nil)
-        raise(FormatException, "DNS packet was truncated (or we messed up parsing it)!")
+        raise(DnsException, "DNS packet was truncated (or we messed up parsing it)!")
       end
     end
 
@@ -41,7 +41,7 @@ module Nesser
     public
     def unpack(format)
       if @offset >= @data.length
-        raise(FormatException, "DNS packet was invalid!")
+        raise(DnsException, "DNS packet was invalid!")
       end
 
       results = @data[@offset..-1].unpack(format + "a*")
@@ -59,7 +59,7 @@ module Nesser
 
       _verify_results(results)
       if results.length != 1
-        raise(FormatException, "unpack_one() was passed a bad format string")
+        raise(DnsException, "unpack_one() was passed a bad format string")
       end
 
       return results.pop()
@@ -86,7 +86,7 @@ module Nesser
       segments = []
 
       if depth > MAX_RECURSION_DEPTH
-        raise(FormatException, "It looks like this packet contains recursive pointers!")
+        raise(DnsException, "It looks like this packet contains recursive pointers!")
       end
 
       loop do

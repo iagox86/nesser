@@ -32,7 +32,7 @@ module Nesser
     def test_unpack_one_unpack_too_many()
       unpacker = Unpacker.new("AAAABBC")
 
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         unpacker.unpack_one("NN")
       end
     end
@@ -40,19 +40,19 @@ module Nesser
     def test_unpack_truncated()
       # Between fields
       unpacker = Unpacker.new("AAAA")
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         unpacker.unpack("Nn")
       end
 
       # Within a field
       unpacker = Unpacker.new("AAA")
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         unpacker.unpack("N")
       end
 
       # Empty string
       unpacker = Unpacker.new("")
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         unpacker.unpack("N")
       end
     end
@@ -115,52 +115,52 @@ module Nesser
     def test_unpack_one_bad_format_string()
       unpacker = Unpacker.new("AAAAAAAA")
 
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         unpacker.unpack_one("AA")
       end
     end
 
     def test_unpack_name_truncated()
       # No pointers
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\x04name").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\x04na").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\x04").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("").unpack_name()
       end
 
       # Pointers
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04AA\x04test").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04AA\x04tes").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04AA\x04te").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04AA\x04t").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04AA\x04").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04AA").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04A").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0\x04").unpack_name()
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         Unpacker.new("\xc0").unpack_name()
       end
     end
@@ -179,7 +179,7 @@ module Nesser
       # "eat" the first string so we can reference it later
       unpacker.unpack("N")
 
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         unpacker.unpack_name()
       end
     end

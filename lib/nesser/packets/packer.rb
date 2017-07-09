@@ -32,14 +32,14 @@ module Nesser
     private
     def validate!(name)
       if name.chars.detect { |ch| !LEGAL_CHARACTERS.include?(ch) }
-        raise(FormatException, "DNS name contains illegal characters")
+        raise(DnsException, "DNS name contains illegal characters")
       end
       if name.length > 253
-        raise(FormatException, "DNS name can't be longer than 253 characters")
+        raise(DnsException, "DNS name can't be longer than 253 characters")
       end
       name.split(/\./).each do |segment|
         if segment.length == 0 || segment.length > 63
-          raise(FormatException, "DNS segments must be between 1 and 63 characters!")
+          raise(DnsException, "DNS segments must be between 1 and 63 characters!")
         end
       end
     end

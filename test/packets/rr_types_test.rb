@@ -27,19 +27,19 @@ module Nesser
 
     def test_unpack_invalid_A()
       unpacker = Unpacker.new("\x00\x05ABCD")
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         A.unpack(unpacker)
       end
     end
 
     def test_invalid_a()
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         A.new(address: 123)
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         A.new(address: '::1')
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         A.new(address: '500.hi')
       end
     end
@@ -222,13 +222,13 @@ module Nesser
     end
 
     def test_invalid_aaaa()
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         AAAA.new(address: 123)
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         AAAA.new(address: '1.2.3.4')
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         AAAA.new(address: '500.hi')
       end
     end

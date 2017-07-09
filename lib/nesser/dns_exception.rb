@@ -12,7 +12,4 @@
 module Nesser
   class DnsException < StandardError
   end
-
-  class FormatException < DnsException
-  end
 end

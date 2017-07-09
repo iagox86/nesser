@@ -20,24 +20,24 @@ module Nesser
 
     def initialize(address:)
       if !address.is_a?(String)
-        raise(FormatException, "String required!")
+        raise(DnsException, "String required!")
       end
 
       begin
         @address = IPAddr.new(address)
       rescue IPAddr::InvalidAddressError => e
-        raise(FormatException, "Invalid address: %s" % e)
+        raise(DnsException, "Invalid address: %s" % e)
       end
 
       if !@address.ipv4?()
-        raise(FormatException, "IPv4 address required!")
+        raise(DnsException, "IPv4 address required!")
       end
     end
 
     def self.unpack(unpacker)
       length = unpacker.unpack_one('n')
       if length != 4
-        raise(FormatException, "Invalid A record!")
+        raise(DnsException, "Invalid A record!")
       end
 
       data = unpacker.unpack('a4').join()
@@ -121,7 +121,7 @@ module Nesser
     def self.unpack(unpacker)
       length = unpacker.unpack_one('n')
       if length < 22
-        raise(FormatException, "Invalid SOA record")
+        raise(DnsException, "Invalid SOA record")
       end
 
       primary = unpacker.unpack_name()
@@ -166,7 +166,7 @@ module Nesser
     def self.unpack(unpacker)
       length = unpacker.unpack_one('n')
       if length < 3
-        raise(FormatException, "Invalid MX record")
+        raise(DnsException, "Invalid MX record")
       end
 
       preference = unpacker.unpack_one('n')
@@ -198,13 +198,13 @@ module Nesser
     def self.unpack(unpacker)
       length = unpacker.unpack_one('n')
       if length < 1
-        raise(FormatException, "Invalid TXT record")
+        raise(DnsException, "Invalid TXT record")
       end
 
       len = unpacker.unpack_one("C")
 
       if len != length - 1
-        raise(FormatException, "Invalid TXT record")
+        raise(DnsException, "Invalid TXT record")
       end
 
       data = unpacker.unpack_one("a#{len}")
@@ -228,24 +228,24 @@ module Nesser
 
     def initialize(address:)
       if !address.is_a?(String)
-        raise(FormatException, "String required!")
+        raise(DnsException, "String required!")
       end
 
       begin
         @address = IPAddr.new(address)
       rescue IPAddr::InvalidAddressError => e
-        raise(FormatException, "Invalid address: %s" % e)
+        raise(DnsException, "Invalid address: %s" % e)
       end
 
       if !@address.ipv6?()
-        raise(FormatException, "IPv6 address required!")
+        raise(DnsException, "IPv6 address required!")
       end
     end
 
     def self.unpack(unpacker)
       length = unpacker.unpack_one('n')
       if length != 16
-        raise(FormatException, "Invalid AAAA record")
+        raise(DnsException, "Invalid AAAA record")
       end
 
       data = unpacker.unpack('a16').join()

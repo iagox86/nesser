@@ -89,10 +89,10 @@ module Nesser
     def test_pack_illegal_name()
       packer = Packer.new()
 
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         packer.pack_name('test..com')
       end
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         packer.pack_name('te\x00st.com')
       end
     end
@@ -102,7 +102,7 @@ module Nesser
 
       name = ('A' * 63) + '.com'
       packer.pack_name(name)
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         packer.pack_name('A' + name)
       end
     end
@@ -120,7 +120,7 @@ module Nesser
       packer.pack_name(name)
 
       # ...but fails with 254
-      assert_raises(FormatException) do
+      assert_raises(DnsException) do
         packer.pack_name('A' + name)
       end
     end
