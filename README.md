@@ -20,7 +20,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Client
+
+After installing the gem, using it as a client is pretty straight forward.
+I wrote an example file in [lib/nesser/examples](lib/nesser/examples), but in
+a nutshell, here's the code:
+
+    require 'nesser'
+    
+    s = UDPSocket.new()
+    result = Nesser::Nesser.query(s: s, hostname: 'google.com', type: Nesser::TYPE_ANY)
+
+You can find all constant definitions in
+[the constants.rb file](lib/nesser/packets/constants.rb)
+
+The return from Nesser.query() is an instance of
+[Nesser::Answer](lib/nesser/packets/answer.rb).
+
+### Server
+
+TODO
 
 ## Contributing
 
