@@ -17,7 +17,7 @@ module Nesser
 
       transaction = Transaction.new(
         s: s,
-        request_packet: packet,
+        request: packet,
         host: 'example.org',
         port: 6112,
       )
@@ -67,7 +67,7 @@ module Nesser
 
       transaction = Transaction.new(
         s: s,
-        request_packet: packet,
+        request: packet,
         host: 'example.org',
         port: 6112,
       )

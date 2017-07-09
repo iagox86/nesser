@@ -16,7 +16,7 @@ require 'nesser'
 s = UDPSocket.new()
 
 nesser = Nesser::Nesser.new(s: s) do |transaction|
-  if transaction.request_packet.questions[0].name == 'test.com'
+  if transaction.request.questions[0].name == 'test.com'
     transaction.answer!([Nesser::Answer.new(
       name: 'test.com',
       type: Nesser::TYPE_A,

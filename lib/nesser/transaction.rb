@@ -16,17 +16,18 @@
 ##
 module Nesser
   class Transaction
-    attr_reader :request_packet, :response_packet, :sent
+    attr_reader :request, :sent
+    attr_accessor :response
 
     public
-    def initialize(s:, request_packet:, host:, port:)
+    def initialize(s:, request:, host:, port:)
       @s = s
-      @request_packet = request_packet
+      @request = request
       @host = host
       @port = port
       @sent = false
 
-      @response_packet = request_packet.answer()
+      @response = request.answer()
     end
 
     private
@@ -44,7 +45,7 @@ module Nesser
     public
     def answer!(answers=[])
       answers.each do |answer|
-        @response_packet.add_answer(answer)
+        @response.add_answer(answer)
       end
 
       reply!()
@@ -54,7 +55,7 @@ module Nesser
     def error!(rcode)
       not_sent!()
 
-      @response_packet.rcode = rcode
+      @response.rcode = rcode
       reply!()
     end
 
@@ -88,11 +89,11 @@ module Nesser
 #      @sent = true
 #    end
 
-    private
+    public
     def reply!()
       not_sent!()
 
-      @s.send(@response_packet.to_bytes(), 0, @host, @port)
+      @s.send(@response.to_bytes(), 0, @host, @port)
       @sent = true
     end
 
@@ -102,13 +103,13 @@ module Nesser
 
       result << '== Nesser (DNS) Transaction =='
       result << '-- Request --'
-      result << @request_packet.to_s()
+      result << @request.to_s()
       if !sent()
         result << '-- Response [not sent yet] --'
       else
         result << '-- Response [sent] --'
       end
-      result << @response_packet.to_s()
+      result << @response.to_s()
 
       return result.join("\n")
     end
