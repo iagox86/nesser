@@ -177,4 +177,6 @@ when necessary!
 * 0.0.1 - Test deploy
 * 0.0.2 - Basically code complete
 * 0.0.3 - First actual release
-* 0.0.4 - Implement transaction.passthrough!()
+* 0.0.4
+** Implement transaction.passthrough!()
+** Fix a bug where numbers would cause a validation error in DNS names
