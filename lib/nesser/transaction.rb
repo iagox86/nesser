@@ -22,6 +22,8 @@
 # complex and generally not needed.
 ##
 
+require 'socket'
+
 module Nesser
   class Transaction
     attr_reader :request, :sent
@@ -87,35 +89,42 @@ module Nesser
       reply!()
     end
 
-#    public
-#    def passthrough!(pt_host, pt_port, callback = nil)
-#      not_sent!()
-#
-#      Nesser.query(@request.questions[0].name, {
-#          :server  => pt_host,
-#          :port    => pt_port,
-#          :type    => @request.questions[0].type,
-#          :cls     => @request.questions[0].cls,
-#          :timeout => 3,
-#        }
-#      ) do |response|
-#        # If there was a timeout, handle it
-#        if(response.nil?)
-#          response = @response
-#          response.rcode = Nesser::Packet::RCODE_SERVER_FAILURE
-#        end
-#
-#        response.trn_id = @request.trn_id
-#        @s.send(response.serialize(), 0, @host, @port)
-#
-#        # Let the callback know if anybody registered one
-#        if(callback)
-#          callback.call(response)
-#        end
-#      end
-#
-#      @sent = true
-#    end
+    ##
+    # Send the request upstream.
+    #
+    # Note that this requires a socket, and that it can't be the same socket
+    # as the rest of the transaction (since we don't do any kind of
+    # multiplexing). If you don't specify a socket, one will be provided to
+    # you at no extra cost (financially, anyways).
+    ##
+    public
+    def passthrough!(host:'8.8.8.8', port:53)
+      not_sent!()
+
+      # Get a local handle to the socket
+      s = @s
+
+      Thread.new() do
+        begin
+          response = Nesser.query(
+            s: s,
+            hostname: @request.questions[0].name,
+            server: host,
+            port: port,
+            type: @request.questions[0].type,
+            cls: @request.questions[0].cls,
+          )
+
+          if response.rcode != RCODE_SUCCESS
+            error!(response.rcode)
+          else
+            answer!(response.answers)
+          end
+        rescue StandardError
+          error!(RCODE_SERVER_FAILURE)
+        end
+      end
+    end
 
     ##
     # Reply with the response packet, in whatever state it's in. While this is

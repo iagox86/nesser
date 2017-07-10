@@ -97,6 +97,13 @@ module Nesser
       end
     end
 
+    # Based on an actual bug I found - I'd had 0-9 legal as numbers, but not as
+    # characters.
+    def test_pack_name_with_numbers()
+      packer = Packer.new()
+      packer.pack_name('test0123456789.com')
+    end
+
     def test_pack_name_segment_too_long()
       packer = Packer.new()
 

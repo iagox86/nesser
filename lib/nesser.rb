@@ -96,7 +96,7 @@ module Nesser
 
           begin
             proc.call(transaction)
-          rescue Exception => e
+          rescue StandardError => e
             logger.error("Error thrown while processing the DNS packet: %s" % e.to_s())
             logger.info(e.backtrace().join("\n"))
 
