@@ -25,4 +25,6 @@ result = Nesser::Nesser.query(s: s, hostname: 'google.com', type: Nesser::TYPE_A
 # Print the result
 puts result
 
-result = Nesser::Nesser.query(s: s, hostname: '8.8.8.8.in-addr.arpa', type: Nesser::TYPE_PTR)
+# Perform a reverse query for 8.8.4.4 and print the result
+result = Nesser::Nesser.query(s: s, hostname: '4.4.8.8.in-addr.arpa', type: Nesser::TYPE_PTR)
+puts result
