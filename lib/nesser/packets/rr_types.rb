@@ -78,7 +78,7 @@ module Nesser
     end
 
     def self.unpack(unpacker)
-      # We don't really need the name for anything, so just discard it
+      # We don't really need the length for anything, so just discard it
       unpacker.unpack('n')
 
       return self.new(name: unpacker.unpack_name())
@@ -107,7 +107,7 @@ module Nesser
     end
 
     def self.unpack(unpacker)
-      # We don't really need the name for anything, so just discard it
+      # We don't really need the length for anything, so just discard it
       unpacker.unpack('n')
 
       return self.new(name: unpacker.unpack_name())
@@ -174,6 +174,34 @@ module Nesser
         @expire,
         @ttl,
       ]
+    end
+  end
+
+  ##
+  # PTR record - ie, reverse DNS
+  ##
+  class PTR
+    attr_accessor :name
+
+    def initialize(name:)
+      @name = name
+    end
+
+    def self.unpack(unpacker)
+      # We don't really need the length for anything, so just discard it
+      unpacker.unpack('n')
+
+      return self.new(name: unpacker.unpack_name())
+    end
+
+    def pack(packer)
+      length = packer.pack_name(@name, dry_run: true)
+      packer.pack('n', length)
+      packer.pack_name(@name)
+    end
+
+    def to_s()
+      return "#{@name} [PTR]"
     end
   end
 

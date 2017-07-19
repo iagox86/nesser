@@ -38,8 +38,14 @@ module Nesser
     ##
     private
     def validate!(name)
-      if name.chars.detect { |ch| !LEGAL_CHARACTERS.include?(ch) }
-        raise(DnsException, "DNS name contains illegal characters")
+      if name.chars.detect { |ch|
+        if(!LEGAL_CHARACTERS.include?(ch))
+          puts ch;
+          return false;
+        end
+        return true;
+      }
+        raise(DnsException, "DNS name contains illegal characters (%s)" % name)
       end
       if name.length > 253
         raise(DnsException, "DNS name can't be longer than 253 characters")

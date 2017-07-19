@@ -71,6 +71,7 @@ module Nesser
   TYPE_NS    = 0x0002
   TYPE_CNAME = 0x0005
   TYPE_SOA   = 0x0006
+  TYPE_PTR   = 0x000c
   TYPE_MX    = 0x000f
   TYPE_TXT   = 0x0010
   TYPE_AAAA  = 0x001c
@@ -80,6 +81,7 @@ module Nesser
     TYPE_NS    => "NS",
     TYPE_CNAME => "CNAME",
     TYPE_SOA   => "SOA",
+    TYPE_PTR   => "PTR",
     TYPE_MX    => "MX",
     TYPE_TXT   => "TXT",
     TYPE_AAAA  => "AAAA",

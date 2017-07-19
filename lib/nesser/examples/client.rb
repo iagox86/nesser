@@ -24,3 +24,5 @@ result = Nesser::Nesser.query(s: s, hostname: 'google.com', type: Nesser::TYPE_A
 
 # Print the result
 puts result
+
+result = Nesser::Nesser.query(s: s, hostname: '8.8.8.8.in-addr.arpa', type: Nesser::TYPE_PTR)

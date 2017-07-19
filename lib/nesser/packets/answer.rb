@@ -52,6 +52,8 @@ module Nesser
         rr = CNAME.unpack(unpacker)
       when TYPE_SOA
         rr = SOA.unpack(unpacker)
+      when TYPE_PTR
+        rr = PTR.unpack(unpacker)
       when TYPE_MX
         rr = MX.unpack(unpacker)
       when TYPE_TXT
