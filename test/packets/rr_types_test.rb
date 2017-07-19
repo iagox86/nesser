@@ -45,6 +45,28 @@ module Nesser
     end
   end
 
+  class PTR_Test < ::Test::Unit::TestCase
+    def test_ptr()
+      # Create
+      record = PTR.new(name: 'test.com')
+      assert_equal('test.com', record.name)
+
+      # Stringify
+      assert_equal('test.com [PTR]', record.to_s)
+
+      # Pack
+      packer = Packer.new()
+      record.pack(packer)
+      assert_equal("\x00\x0a\x04test\x03com\x00", packer.get())
+    end
+
+    def test_unpack_ptr()
+      unpacker = Unpacker.new("\x00\x0a\x04test\x03com\x00")
+      record = PTR.unpack(unpacker)
+      assert_equal('test.com', record.name)
+    end
+  end
+
   class NS_Test < ::Test::Unit::TestCase
     def test_ns()
       # Create

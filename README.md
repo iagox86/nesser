@@ -185,3 +185,5 @@ when necessary!
 ** Fix a bug where numbers would cause a validation error in DNS names
 * 0.0.5
 ** Implement PTR records (reverse lookups)
+* 0.0.6
+** Enable '@' characters to be used in names (used in reverse DNS lookups)
