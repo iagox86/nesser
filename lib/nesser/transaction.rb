@@ -47,6 +47,7 @@ module Nesser
     private
     def not_sent!()
       if @sent
+        # TODO: This isn't a valid raise
         raise ArgumentError("Already sent!")
       end
     end

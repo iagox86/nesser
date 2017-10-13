@@ -97,11 +97,16 @@ module Nesser
       end
     end
 
-    # Based on an actual bug I found - I'd had 0-9 legal as numbers, but not as
-    # characters.
+    # Based on an actual bugs I found - I'd had 0-9 legal as numbers, but not as
+    # characters (ditto underscore).
     def test_pack_name_with_numbers()
       packer = Packer.new()
       packer.pack_name('test0123456789.com')
+    end
+
+    def test_pack_name_with_underscore()
+      packer = Packer.new()
+      packer.pack_name("_xXmpP-ClienT._TCp.test.com")
     end
 
     def test_pack_name_segment_too_long()

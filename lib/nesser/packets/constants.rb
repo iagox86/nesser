@@ -19,7 +19,7 @@ module Nesser
     ('a'..'z').to_a +
     ('A'..'Z').to_a +
     ('0'..'9').to_a +
-    ['-', '.', '@']
+    ['-', '.', '@', '_']
   )
   MAX_SEGMENT_LENGTH = 63
   MAX_TOTAL_LENGTH = 253
